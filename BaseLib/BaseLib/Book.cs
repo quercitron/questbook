@@ -159,6 +159,8 @@ namespace BaseLib
 
         public List<SearchResultState> GetWay(SearchParameters parameters)
         {
+            LastSearchParameters = parameters;
+
             // remove unuse items
             parameters.StartState.Items.RemoveAll(item => !item.BasicItem.InUse);
 
@@ -180,10 +182,70 @@ namespace BaseLib
 
             stopwatch.Stop();
 
+            MarkPreviousStates(result);
             LastGeneratedWay = result;
-            LastSearchParameters = parameters;
 
             return result;
+        }
+
+        private void MarkPreviousStates(IList<SearchResultState> newWay)
+        {
+            if (LastGeneratedWay == null)
+            {
+                return;
+            }
+
+            int[,] d = new int[newWay.Count + 1, LastGeneratedWay.Count + 1];
+            bool[,] e = new bool[newWay.Count + 1, LastGeneratedWay.Count + 1];
+
+            int i, j;
+
+            for (i = 1; i <= newWay.Count; i++)
+            {
+                for (j = 1; j <= LastGeneratedWay.Count; j++)
+                {
+                    if (newWay[i - 1].State.ParagraphNo.Equals(LastGeneratedWay[j - 1].State.ParagraphNo))
+                    {
+                        d[i, j] = d[i - 1, j - 1] + 1;
+                        e[i, j] = true;
+                    }
+                    else
+                    {
+                        if (d[i - 1, j] >= d[i, j - 1])
+                        {
+                            d[i, j] = d[i - 1, j];
+                        }
+                        else
+                        {
+                            d[i, j] = d[i, j - 1];
+                        }
+                    }
+                }
+            }
+
+            i = newWay.Count;
+            j = LastGeneratedWay.Count;
+
+            while (i > 0 && j > 0)
+            {
+                if (e[i, j])
+                {
+                    newWay[i - 1].IsSame = true;
+                    i--;
+                    j--;
+                }
+                else
+                {
+                    if (d[i - 1, j] > d[i, j - 1])
+                    {
+                        i--;
+                    }
+                    else
+                    {
+                        j--;
+                    }
+                }
+            }
         }
 
         private List<SearchResultState> GetFurthestWay(PersonState startState)

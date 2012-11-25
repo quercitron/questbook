@@ -632,82 +632,10 @@ namespace QuestBookViewModel
             if (baseWay != null)
             {
                 newWay = baseWay.Select(s => new SearchResultStateModel(s)).ToList();
-
-                if (FoundWay != null)
-                {
-                    MarkPreviousStates(newWay, FoundWay);
-                }
             }
 
             return newWay;
-        }
-
-        private void MarkPreviousStates(IList<SearchResultStateModel> newWay, IList<SearchResultStateModel> lastWay)
-        {
-            int[,] d = new int[newWay.Count + 1,lastWay.Count + 1];
-            bool[,] e = new bool[newWay.Count + 1,lastWay.Count + 1];
-
-            int i, j;
-
-            for (i = 1; i <= newWay.Count; i++)
-            {
-                for (j = 1; j <= lastWay.Count; j++)
-                {
-                    if (newWay[i - 1].State.ParagraphNo.Equals(lastWay[j - 1].State.ParagraphNo))
-                    {
-                        d[i, j] = d[i - 1, j - 1] + 1;
-                        e[i, j] = true;
-                    }
-                    else
-                    {
-                        if (d[i - 1, j] >= d[i, j - 1])
-                        {
-                            d[i, j] = d[i - 1, j];
-                        }
-                        else
-                        {
-                            d[i, j] = d[i, j - 1];
-                        }
-                    }
-                }
-            }
-
-            i = newWay.Count;
-            j = lastWay.Count;
-
-            while (i > 0 && j > 0)
-            {
-                if (e[i, j])
-                {
-                    newWay[i - 1].IsSame = true;
-                    i--;
-                    j--;
-                }
-                else
-                {
-                    if (d[i - 1, j] > d[i, j - 1])
-                    {
-                        i--;
-                    }
-                    else
-                    {
-                        j--;
-                    }
-                }
-            }
-
-            /*for (int i = 0; i < Math.Min(FoundWay.Count, newWay.Count); i++)
-            {
-                if (newWay[i].State.ParagraphNo == FoundWay[i].State.ParagraphNo)
-                {
-                    newWay[i].IsSame = true;
-                }
-                else
-                {
-                    break;
-                }
-            }*/
-        }
+        }        
 
         private SearchResultStateModel m_SelectedResultState;
         public SearchResultStateModel SelectedResultState

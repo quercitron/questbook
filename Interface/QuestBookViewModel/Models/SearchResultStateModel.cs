@@ -28,6 +28,9 @@ namespace QuestBookViewModel.Models
             get { return m_SearchResultState.State.Items; }
         }
 
-        public bool IsSame { get; set; }
+        public bool IsSame
+        {
+            get { return m_SearchResultState.IsSame; }
+        }
     }
 }
