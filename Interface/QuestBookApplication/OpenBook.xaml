@@ -1,0 +1,17 @@
+﻿<Window x:Class="QuestBookApplication.OpenBook"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Open..." Height="300" Width="300">
+    <Grid>
+        <GroupBox Header="File">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox />
+                <Button Content="Open" Grid.Column="1" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

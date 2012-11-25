@@ -1,0 +1,426 @@
+﻿<Window x:Class="QuestBookApplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:Enumerables="clr-namespace:BaseLib.Enumerables;assembly=BaseLib" Height="800" Width="1600"
+        Background="#F5F5DC"
+        Title="QuestBook Pathfinder"
+        Icon="Images/footprints.png"
+        WindowState="Maximized">
+    <Window.Resources>
+        <CollectionViewSource x:Key="SortedParagraphs" Source="{Binding Paragraphs}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Id" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+
+        <CollectionViewSource x:Key="SortedEdges" Source="{Binding Edges}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="FromId" />
+                <scm:SortDescription PropertyName="ToId" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+
+        <CollectionViewSource x:Key="SortedItems" Source="{Binding Items}">
+
+        </CollectionViewSource>
+
+        <LinearGradientBrush x:Key="GreenBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.1" Color="#4400CC00" />
+            <GradientStop Offset="0.8" Color="#2200CC00" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="DarkGreenBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.1" Color="#7766CC00" />
+            <GradientStop Offset="0.8" Color="#5566CC00" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.1" Color="#44CC0000" />
+            <GradientStop Offset="0.8" Color="#22CC0000" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="BlueBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.1" Color="#440000CC" />
+            <GradientStop Offset="0.8" Color="#220000CC" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GrayBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.1" Color="#EEEEEEEE" />
+            <GradientStop Offset="0.8" Color="#BBFFFFFF" />
+        </LinearGradientBrush>
+
+        <Style x:Key="ItemContStyle" TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>                
+                <DataTrigger Binding="{Binding IsSame}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource GreenBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style TargetType="{x:Type DataGrid}">
+            <Setter Property="GridLinesVisibility" Value="None" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="Background" Value="White" />
+            <Style.Resources>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0, 2, 0, 2" />
+                    <Setter Property="Padding" Value="0, 2, 0, 2" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="Blue" />
+                            <!--<Setter Property="Background" Value="#0F0000FF" />-->
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style x:Key="ItemInUseStyle" TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding InUse}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource GreenBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding InUse}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource GrayBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="EdgeStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="Background" Value="{StaticResource GreenBrush}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDefault}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource BlueBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource GrayBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <ObjectDataProvider x:Key="SearchAlgorithm" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Enumerables:SearchAlgorithm" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadCommand}"/>
+    </Window.InputBindings>
+    
+    <!--Visual Start-->
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Save" Command="{Binding SaveCommand}" />
+                <MenuItem Header="Open" Command="{Binding LoadCommand}" />
+            </MenuItem>
+        </Menu>
+        <!--<StatusBar DockPanel.Dock="Bottom">
+            <ProgressBar IsIndeterminate="True" Width="100" Height="10" Visibility="{Binding ComputingRunning}" />
+        </StatusBar>-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            
+            <!--ITEMS-->
+            <GroupBox Header="Items" Grid.Row="0" Grid.Column="0">
+                <StackPanel Orientation="Vertical">
+                    <DataGrid x:Name="ItemsList" ItemsSource="{Binding Path=Items}" SelectedItem="{Binding SelectedItem}" 
+                              ItemContainerStyle="{StaticResource ItemInUseStyle}" Height="400">
+                        <DataGrid.Columns>
+                                <DataGridTextColumn Width="3*" Header="Name" Binding="{Binding Name}" />
+                            <DataGridCheckBoxColumn Width ="*" Header="IsUnique" Binding="{Binding IsUnique}" />
+                            <DataGridCheckBoxColumn Width ="*" Header="InUse" Binding="{Binding InUse}" />
+                            <DataGridCheckBoxColumn Width ="*" Header="IsVital" Binding="{Binding IsVital}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <!--<Grid DataContext="{Binding ElementName=ItemsList, Path=SelectedItem}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Name" Target="{Binding ElementName=ItemName}" />
+                        <TextBox Margin="4" Grid.Column="1" x:Name="ItemName" Text="{Binding Name}" />
+                        <CheckBox Margin="4" Grid.Row="1" Content="Is Unique" IsChecked="{Binding IsUnique}" />
+                        <CheckBox Margin="4" Grid.Row="2" Content="In Use" IsChecked="{Binding InUse}" />
+                        <CheckBox Margin="4" Grid.Row="3" Content="In Vital" IsChecked="{Binding IsVital}" />
+                    </Grid>-->
+                    <Button Margin="0, 3, 0, 3" Content="Delete" Command="{Binding DeleteItemCommand}" />
+                    <GroupBox Header="New item">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Margin="0, 3, 3, 3" Width="110" Text="{Binding Path=NewItemName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox Margin="5" Content="Is Unique" IsChecked="{Binding NewItemIsUnique}" />
+                                <CheckBox Margin="5" Content="Is Vital" IsChecked="{Binding NewItemIsVital}" />
+                            </StackPanel>
+                            <Button Command="{Binding Path=AddNewItemCommand}">
+                                Add
+                            </Button>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </GroupBox>
+            
+            <!--PARAGRAPH-->
+            <GroupBox Grid.Column="1">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Paragraph" Margin="0, 0, 10, 0" />
+                        <ComboBox x:Name="ParagraphsList" ItemsSource="{Binding Source={StaticResource SortedParagraphs}}" SelectedItem="{Binding SelectedParagraph}" 
+                                  TextSearch.TextPath="Id" Width="80" IsEditable="True">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Id}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </GroupBox.Header>
+                <StackPanel Orientation="Vertical">
+                    <GroupBox Header="Rewards" Background="#90EE90">
+                        <StackPanel>
+                            <DataGrid x:Name="ParagraphRewardItems" ItemsSource="{Binding ElementName=ParagraphsList, Path=SelectedItem.RecievedItems}" 
+                                      SelectedItem="{Binding SelectedParagraphReward}" Height="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="3*" Header="Item type" Binding="{Binding Path=BasicItem.Name}" />
+                                    <DataGridTextColumn Width="*" Header="Count" Binding="{Binding Path=Count}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Margin="0, 2, 0, 10">
+                                <!--<Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox ItemsSource="{Binding Items}" SelectedItem="{Binding ElementName=ParagraphRewardItems, Path=SelectedItem.BasicItem}" />
+                                    <TextBox Grid.Column="1" Text="{Binding ElementName=ParagraphRewardItems, Path=SelectedItem.Count, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>-->
+                                <Button Content="Delete" Command="{Binding DeleteParagraphRewardCommand}" />
+                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox ItemsSource="{Binding Source={StaticResource SortedItems}}" SelectedItem="{Binding NewRewardParagraphItemType}" />
+                                <TextBox Grid.Column="1" Text="{Binding NewRewardParagraphItemTypeCount, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                            <Button Content="Add Reward Item" Command="{Binding AddParagraphRewardItemCommand}" />
+                        </StackPanel>
+                    </GroupBox>
+                    <!--0000000000000000000000000000000000000000000000000000000-->
+                    <GroupBox Header="Requested Items" Background="#FFE4E1">
+                        <StackPanel>
+                            <DataGrid x:Name="ParagraphRequestedItemList" Height="200" ItemsSource="{Binding ElementName=ParagraphsList, Path=SelectedItem.RequestedItems}"
+                                      SelectedItem="{Binding SelectedParagraphRequetedItem}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="3*" Header="Item type" Binding="{Binding Path=BasicItem.Name}" />
+                                    <DataGridTextColumn Width="*" Header="Count" Binding="{Binding Path=Count}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Margin="0, 2, 0, 10">
+                                <!--<Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox Margin="2" ItemsSource="{Binding Items}" SelectedItem="{Binding ElementName=ParagraphRequestedItemList, Path=SelectedItem.BasicItem}" />
+                                    <TextBox Margin="2" Grid.Column="1" Text="{Binding ElementName=ParagraphRequestedItemList, Path=SelectedItem.Count, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>-->
+                                <Button Margin="0, 2, 0, 2" Content="Delete Requested Item" Command="{Binding DeleteParagraphRequestedItemCommand}" />
+                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Grid.Column="0" ItemsSource="{Binding Items}" SelectedItem="{Binding NewParagraphRequestedItemType}" />
+                                <TextBox Grid.Column="1" Text="{Binding NewParagraphRequestedItemCount, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                            <Button Content="Add New Requested Item" Command="{Binding AddNewParagraphRequestedItemCommand}" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </GroupBox>
+            
+            <!--EDGES-->
+            <GroupBox Header="Edges" Grid.Column="2">
+                <StackPanel>
+                    <DataGrid x:Name="EdgeList" Height="220" ItemsSource="{Binding Source={StaticResource SortedEdges}}" SelectedItem="{Binding SelectedEdge}" 
+                              TextSearch.TextPath="FromId" ItemContainerStyle="{StaticResource EdgeStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Header="From" Binding="{Binding FromId}" IsReadOnly="True" />
+                            <DataGridTextColumn Width="*" Header="To" Binding="{Binding ToId}" IsReadOnly="True" />
+                            <DataGridTextColumn Width="*" Header="Priority" Binding="{Binding Priority}" />
+                            <DataGridCheckBoxColumn Width="*" Header="Is Active" Binding="{Binding IsActive}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <!--<Grid DataContext="{Binding ElementName=EdgeList, Path=SelectedItem}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" Content="Is Active" IsChecked="{Binding IsActive}" />
+                    </Grid>-->
+                    <Grid Margin="0, 2, 0, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Margin="0, 0, 1, 0" Text="{Binding Path=FromId, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+                        <TextBox Margin="1, 0, 0, 0" Grid.Column="1" Text="{Binding ToId, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+                    </Grid>
+                    <Button Margin="0, 2, 0, 0" Content="Add New Edge" Command="{Binding AddNewEdgeCommand}" />
+                    <!--<Expander Header="New Edge">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Text="{Binding NewEdgeFrom, TargetNullValue='', UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox Grid.Column="1" Text="{Binding NewEdgeTo, TargetNullValue='', UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </Expander>-->
+                    
+                    <!--EDGES REWARD-->
+                    <GroupBox Header="Rewards" Background="#90EE90">
+                        <StackPanel>
+                            <DataGrid x:Name="EdgeRewardItems" ItemsSource="{Binding ElementName=EdgeList, Path=SelectedItem.RecievedItems}"
+                                      SelectedItem="{Binding SelectedEdgeReward}" Height="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="3*" Header="Item type" Binding="{Binding Path=BasicItem.Name}" />
+                                    <DataGridTextColumn Width="*" Header="Count" Binding="{Binding Path=Count}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Margin="0, 2, 0, 10">
+                                <!--<Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox ItemsSource="{Binding Items}" SelectedItem="{Binding ElementName=EdgeRewardItems, Path=SelectedItem.BasicItem}" />
+                                    <TextBox Grid.Column="1" Text="{Binding ElementName=EdgeRewardItems, Path=SelectedItem.Count, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>-->
+                                <Button Content="Delete" Command="{Binding DeleteEdgeRewardCommand}" />
+                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox ItemsSource="{Binding Items}" SelectedItem="{Binding NewRewardEdgeItemType}" />
+                                <TextBox Grid.Column="1" Text="{Binding NewRewardEdgeItemTypeCount, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                            <Button Content="Add Reward Item" Command="{Binding AddEdgeRewardItemCommand}" />
+                        </StackPanel>
+                    </GroupBox>
+                    <!--Edges Requested Items-->
+                    <GroupBox Header="Requested Items" Background="#FFE4E1">
+                        <StackPanel>
+                            <DataGrid x:Name="EdgeRequestedItemList" Height="200" ItemsSource="{Binding ElementName=EdgeList, Path=SelectedItem.RequestedItems}" SelectedItem="{Binding SelectedEdgeRequetedItem}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="4*" Header="Name" Binding="{Binding BasicItem.Name}" />
+                                    <DataGridTextColumn Width="2*" Header="Count" Binding="{Binding Count}" />
+                                    <DataGridCheckBoxColumn Width="3*" Header="Disappearing" Binding="{Binding IsDisappearing}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Margin="0, 2, 0, 10">
+                                <!--<Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox Margin="2" ItemsSource="{Binding Items}" SelectedItem="{Binding ElementName=EdgeRequestedItemList, Path=SelectedItem.BasicItem}" />
+                                    <TextBox Margin="2" Grid.Column="1" Text="{Binding ElementName=EdgeRequestedItemList, Path=SelectedItem.Count, UpdateSourceTrigger=PropertyChanged}" />
+                                    <CheckBox Margin="2" Grid.Column="2" Content="IsDisappearing" IsChecked="{Binding ElementName=EdgeRequestedItemList, Path=SelectedItem.IsDisappearing}" />
+                                </Grid>-->
+                                <Button Margin="0, 2, 0, 2" Content="Delete Requested Item" Command="{Binding DeleteEdgeRequestedItemCommand}" />
+                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Grid.Column="0" Margin="2" ItemsSource="{Binding Items}" SelectedItem="{Binding NewEdgeRequestedItemType}" />
+                                <TextBox Grid.Column="1" Margin="2" Text="{Binding NewEdgeRequestedItemCount, UpdateSourceTrigger=PropertyChanged}" />
+                                <CheckBox Grid.Column="2" Margin="2" Content="IsDisappearing" IsChecked="{Binding NewEdgeRequestedItemIsDisappearing}" />
+                            </Grid>
+                            <Button Content="Add New Requested Item" Command="{Binding AddNewEdgeRequestedItemCommand}" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Column="3" Header="Search Results" Padding="2">
+                <StackPanel>
+                    <Button Margin="0, 2, 0, 2" Content="Search Furthest" Command="{Binding GetFurthestWayCommand}" />
+                    <DataGrid x:Name="ResultList" ItemsSource="{Binding FoundWay}" SelectedItem="{Binding SelectedResultState}" Height="600" Margin="0, 2, 0, 2"
+                              ItemContainerStyle="{StaticResource ItemContStyle}" AutoGenerateColumns="False" HeadersVisibility="Column" GridLinesVisibility="None"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Paragraph Id" Width="100" Binding="{Binding Path=State.ParagraphNo}" />
+                            <DataGridTextColumn Header="Distance" Width="100" Binding="{Binding Path=Distance}" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <ListView ItemsSource="{Binding Path=Items}" Height="150">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Width="150" Header="Item type" DisplayMemberBinding="{Binding Path=BasicItem.Name}" />
+                                                <GridViewColumn Width="50" Header="Count" DisplayMemberBinding="{Binding Path=Count}" />
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                                <!--<TextBlock Text="{Binding Path=Distance}" />-->
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
+                    <Expander Header="Search Parameters" Padding="2" IsExpanded="True">
+                        <StackPanel>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource SearchAlgorithm}}" SelectedItem="{Binding SearchAlgorithm}" />
+                            <TextBox Text="{Binding StartId, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGrid x:Name="StartItemList" Height="100" ItemsSource="{Binding Path=StartItems}" AutoGenerateColumns="False" GridLinesVisibility="None"
+                                      HeadersVisibility="Column">                                 
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="120" Header="Name" Binding="{Binding BasicItem.Name}" />
+                                    <DataGridTextColumn Width="50" Header="Count" Binding="{Binding Count}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <ComboBox ItemsSource="{Binding Items}" SelectedItem="{Binding NewStartItemType}" />
+                            <TextBox Text="{Binding NewStartItemCount, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Content="Add New Start Item" Command="{Binding AddStartItemCommand}" />
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Column="4" Header="Description">
+                <StackPanel>
+                    <TextBox Text="{Binding ElementName=ParagraphsList, Path=SelectedItem.Description}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="670"/>
+                </StackPanel>                
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</Window>
