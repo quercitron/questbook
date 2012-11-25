@@ -81,7 +81,8 @@ namespace QuestBookViewModel
 
         private bool AddNewItemCommandCanExecute()
         {
-            return !(string.IsNullOrEmpty(NewItemName) || m_Book == null || Items.Any(item => item.Name == NewItemName));
+            return !(string.IsNullOrEmpty(NewItemName) || m_Book == null ||
+                     Items.Any(item => item.Name.Equals(NewItemName, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private void AddNewItemExecute()
@@ -334,6 +335,8 @@ namespace QuestBookViewModel
             if (m_Book != null)
             {
                 Edges = new ObservableCollection<EdgeModel>(m_Book.GetEdges(FromId, ToId).Select(e => new EdgeModel(e)));
+                // TODO: Duplicated update?
+                SelectedEdge = null;
                 NotifyPropertyChanged("Edges");
             }
         }
