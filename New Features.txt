@@ -1,0 +1,6 @@
+1. Auto InUse
+2. Add somethinf like always have
+3. Check Add new Requested Item
+4. Change ItemName to ItemType in rew/req items
+5. Add "Or"
+6. List where items/edges are used
