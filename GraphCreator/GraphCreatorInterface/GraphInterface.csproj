@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="BaseGraphCreator.cs" />
     <Compile Include="BaseGraph.cs" />
-    <Compile Include="GraphUnit.cs" />
     <Compile Include="IGraphCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleEdge.cs" />

@@ -599,6 +599,7 @@ namespace QuestBookViewModel
 
             List<SearchResultState> newWay = null;
 
+            // TODO: Change to application start settings
             Thread thread = new Thread(() => newWay = m_Book.GetWay(searchParameters), 256 * 1024 * 1024);
 
             ComputingRunning = true;

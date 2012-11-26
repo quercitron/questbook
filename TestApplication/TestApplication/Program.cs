@@ -17,33 +17,39 @@ namespace TestApplication
         {
             try
             {
-                Book book;
-
-                //var book = new Book("Forest Of Doom", "blackwood.txt", new BlackWoodGraphCreator());
-
-                //book.Save("save.txt");
-
-                book = Book.Load("save.txt");
-
-                var dict = new Dictionary<int, bool>();
-
-                List<int> cycle = null;
-
-                Thread thread = new Thread(() => cycle = book.FindCycle(1), 1024 * 1024 * 1024);
-
-                thread.Start();
-                thread.Join();
-                using (TextWriter writer = File.CreateText("output.txt"))
-                {
-                    foreach (var p in cycle)
-                    {
-                        writer.WriteLine(p);
-                    }
-                }
+                var book = new Book("blackwood.txt", new BlackWoodGraphCreator(), "Forest Of Doom");
+                book.Save("save.txt");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+            }
+        }
+
+        private static void SearchCycles()
+        {
+            Book book;
+
+            //var book = new Book("Forest Of Doom", "blackwood.txt", new BlackWoodGraphCreator());
+
+            //book.Save("save.txt");
+
+            book = Book.Load("save.txt");
+
+            var dict = new Dictionary<int, bool>();
+
+            List<int> cycle = null;
+
+            Thread thread = new Thread(() => cycle = book.FindCycle(1), 1024 * 1024 * 1024);
+
+            thread.Start();
+            thread.Join();
+            using (TextWriter writer = File.CreateText("output.txt"))
+            {
+                foreach (var p in cycle)
+                {
+                    writer.WriteLine(p);
+                }
             }
         }
 

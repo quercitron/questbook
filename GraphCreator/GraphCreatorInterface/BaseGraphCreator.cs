@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TextExtractor;
+﻿using TextExtractor;
 
 namespace GraphCreatorInterface
 {
@@ -12,7 +10,8 @@ namespace GraphCreatorInterface
         {
             string text = new BaseTextExtractor().Extract(filePath);
 
-            text = text.Replace(Environment.NewLine, " ");
+            // TODO: Add logic to CreateGraphFromText
+            /*text = text.Replace(Environment.NewLine, " ");*/
 
             return CreateGraphFromText(text);
         }

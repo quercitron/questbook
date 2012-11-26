@@ -18,7 +18,7 @@ namespace BaseLib
         public Book(string name, BaseGraph baseGraph)
         {
             Name = name;
-            CreateTime = DateTime.Now;
+            this.CreateDate = DateTime.Now;
 
             this.m_Paragraphs = new Dictionary<int, Paragraph>();
             this.m_Edges = new Dictionary<int, List<Edge>>();
@@ -36,30 +36,37 @@ namespace BaseLib
 
             foreach (var simpleEdge in baseGraph.Edges)
             {
-                var edge = new Edge(m_Paragraphs[simpleEdge.From], m_Paragraphs[simpleEdge.To], true);
+                var edge = new Edge(GetParagraph(simpleEdge.From), GetParagraph(simpleEdge.To), true);
                 m_Edges[simpleEdge.From].Add(edge);
             }
 
             AvailableItems = new List<ItemType>();
         }
 
-        public Book(string name, string filePath, IGraphCreator graphCreator)
+        public Book(string filePath, IGraphCreator graphCreator, string name)
             : this(name, graphCreator.CreateGraphFromFile(filePath))
         {
         }
 
         public Book(string filePath, IGraphCreator graphCreator)
-            : this(Path.GetFileName(filePath), filePath, graphCreator)
+            : this(filePath, graphCreator, Path.GetFileName(filePath))
         {
         }
 
         public string Name { get; set; }
 
-        public DateTime CreateTime { get; private set; }
+        public DateTime CreateDate { get; private set; }
+        public DateTime LastUpdateDate { get; private set; }
 
         public List<ItemType> AvailableItems { get; private set; }
 
         private readonly Dictionary<int, Paragraph> m_Paragraphs;
+
+        public Paragraph GetParagraph(int id)
+        {
+            return m_Paragraphs[id];
+        }
+
         public List<Paragraph> Paragraphs
         {
             get { return m_Paragraphs.Values.ToList(); }
@@ -354,7 +361,7 @@ namespace BaseLib
         public void AddNewEdge(int fromId, int toId)
         {
             // TODO: Add Check
-            var newEdge = new Edge(m_Paragraphs[fromId], m_Paragraphs[toId], false);
+            var newEdge = new Edge(GetParagraph(fromId), GetParagraph(toId), false);
             m_Edges[fromId].Add(newEdge);
         }
 
@@ -363,7 +370,7 @@ namespace BaseLib
             Dictionary<Paragraph, int> dict = new Dictionary<Paragraph, int>();
             Dictionary<Paragraph, Paragraph> way = new Dictionary<Paragraph, Paragraph>();
 
-            return FindCycleDfs(m_Paragraphs[450], null, dict, way);
+            return FindCycleDfs(GetParagraph(450), null, dict, way);
         }
 
         private List<int> FindCycleDfs(Paragraph p, Paragraph prev, Dictionary<Paragraph, int> dict, Dictionary<Paragraph, Paragraph> way)
@@ -390,9 +397,10 @@ namespace BaseLib
 
                         foreach (var id in result)
                         {
-                            if (m_Paragraphs[id].RecievedItems.Count > 0)
+                            var paragraph = this.GetParagraph(id);
+                            if (paragraph.RecievedItems.Count > 0)
                             {
-                                if (m_Paragraphs[id].RecievedItems.Any(item => item.BasicItem.Name == "Gold"))
+                                if (paragraph.RecievedItems.Any(item => item.BasicItem.Name == "Gold"))
                                 {
                                     haveGold = true;
                                 }
@@ -418,6 +426,43 @@ namespace BaseLib
 
             dict[p] = 2;
             return null;
+        }
+
+        public void Update(BaseGraph baseGraph)
+        {
+            this.LastUpdateDate = DateTime.Now;
+
+            foreach (var vertex in baseGraph.Vertices)
+            {
+                Paragraph paragraph;
+                if (m_Paragraphs.ContainsKey(vertex))
+                {
+                    paragraph = m_Paragraphs[vertex];
+                }
+                else
+                {
+                    paragraph = new Paragraph(vertex);
+                    m_Paragraphs.Add(vertex, paragraph);
+                    m_Edges.Add(vertex, new List<Edge>());
+                }
+
+                if (baseGraph.Descriptions.ContainsKey(vertex))
+                {
+                    paragraph.Description = baseGraph.Descriptions[vertex];
+                }                
+            }
+
+            foreach (var simpleEdge in baseGraph.Edges)
+            {
+                var edges = this.GetEdges(simpleEdge.From, simpleEdge.To);
+
+                // TODO: Check condition when to add/not add new edge
+                if (!edges.Any(e => e.IsDefault))
+                {
+                    var edge = new Edge(m_Paragraphs[simpleEdge.From], m_Paragraphs[simpleEdge.To], true);
+                    m_Edges[simpleEdge.From].Add(edge);   
+                }                
+            }
         }
     }
 }
