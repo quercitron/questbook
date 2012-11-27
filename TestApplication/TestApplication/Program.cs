@@ -21,7 +21,7 @@ namespace TestApplication
                 book.Save("save.txt");*/
 
                 var book = Book.Load("save.txt");
-                book.m_GraphCreator = new BlackWoodGraphCreator();
+                //book.m_GraphCreator = new BlackWoodGraphCreator();
                 /*book.Update("Майкл Фрост - Чернолесье.doc");*/
                 book.Save("save2.txt");
             }

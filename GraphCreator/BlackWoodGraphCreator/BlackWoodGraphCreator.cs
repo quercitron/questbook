@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using GraphCreatorInterface;
 
 namespace BlackWoodBook
@@ -9,26 +9,24 @@ namespace BlackWoodBook
     [Serializable]
     public class BlackWoodGraphCreator : BaseGraphCreator
     {
+        #region Public Methods and Operators
+
         public override BaseGraph CreateGraphFromText(string text)
         {
             var result = new BaseGraph();
 
-            var split = text.ToLower().Split();
+            string[] split = text.ToLower().Split();
             int currentParagraph = 0;
             int state = 0; // 0 -- base state, nothing found
-            var description = new StringBuilder();
 
-            string last = null;
+            int currentDescriptionPosition = 0;
 
-            foreach (var part in split)
+            int start;
+            string description;
+
+            foreach (string part in split)
             {
-                var str = RemoveSpecialCharacters(part);
-
-                if (last != null)
-                {
-                    description.AppendFormat("{0} ", last);
-                }
-                last = part;
+                string str = this.RemoveSpecialCharacters(part);
 
                 if (str == "иди")
                 {
@@ -57,9 +55,13 @@ namespace BlackWoodBook
 
                     if (num == currentParagraph + 1)
                     {
-                        result.Descriptions.Add(currentParagraph, description.ToString());
-                        description.Clear();
-                        last = null;
+                        start = text.IndexOf(currentParagraph.ToString(), currentDescriptionPosition);
+                        int end = text.IndexOf((currentParagraph + 1).ToString(), start);
+
+                        description = text.Substring(start, end - start);
+                        result.Descriptions.Add(currentParagraph, description);
+
+                        currentDescriptionPosition = end;
 
                         currentParagraph++;
                         state = 0;
@@ -70,19 +72,27 @@ namespace BlackWoodBook
                 state = 0;
             }
 
-            result.Descriptions.Add(currentParagraph, description.ToString());
+            start = text.IndexOf(currentParagraph.ToString(), currentDescriptionPosition);
+            description = text.Substring(start);
+            result.Descriptions.Add(currentParagraph, description);
 
             return result;
         }
 
+        #endregion
+
+        #region Methods
+
         private string RemoveSpecialCharacters(string text)
         {
             var builder = new StringBuilder();
-            foreach (var ch in text.Where(Char.IsLetterOrDigit))
+            foreach (char ch in text.Where(Char.IsLetterOrDigit))
             {
                 builder.Append(ch);
             }
             return builder.ToString();
         }
+
+        #endregion
     }
 }

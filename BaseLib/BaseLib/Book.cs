@@ -65,7 +65,7 @@ namespace BaseLib
         private readonly Dictionary<int, Paragraph> m_Paragraphs;
 
         [OptionalField]
-        public IGraphCreator m_GraphCreator;
+        private readonly IGraphCreator m_GraphCreator;
 
         public Paragraph GetParagraph(int id)
         {
