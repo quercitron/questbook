@@ -45,6 +45,8 @@ namespace QuestBookViewModel
             AddNewEdgeCommand = new RelayCommand(AddNewEdgeCommandExecute, AddNewEdgeCommandCanExecute);
 
             AddStartItemCommand = new RelayCommand(AddStartItemCommandExecute, AddStartItemCommandCanExecute);
+
+            UpdateCommand = new RelayCommand(UpdateCommandExecute, UpdateCommandCanExecute);
         }
 
         private void UseBook(Book newBook)
@@ -71,6 +73,7 @@ namespace QuestBookViewModel
 
             SaveCommand.RaiseCanExecuteChanged();
             GetFurthestWayCommand.RaiseCanExecuteChanged();
+            UpdateCommand.RaiseCanExecuteChanged();
 
             FoundWay = ConvertWay(m_Book.LastGeneratedWay);
 
@@ -128,6 +131,19 @@ namespace QuestBookViewModel
 
             m_Book.RemoveItem(m_SelectedItem.ItemType);
             RemoveItem(m_SelectedItem);
+        }
+
+        public RelayCommand UpdateCommand { get; private set; }
+
+        public bool UpdateCommandCanExecute()
+        {
+            return m_Book != null;
+        }
+
+        public void UpdateCommandExecute()
+        {
+            // TODO: Change
+            m_Book.Update("BlackWood.txt");            
         }
 
         private void RemoveItem(ItemTypeModel itemTypeModel)

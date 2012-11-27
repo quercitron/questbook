@@ -1,7 +1,9 @@
-﻿using TextExtractor;
+﻿using System;
+using TextExtractor;
 
 namespace GraphCreatorInterface
 {
+    [Serializable]
     public abstract class BaseGraphCreator : IGraphCreator
     {
         public abstract BaseGraph CreateGraphFromText(string text);

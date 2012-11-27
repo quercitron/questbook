@@ -116,8 +116,11 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Save" Command="{Binding SaveCommand}" />
                 <MenuItem Header="Open" Command="{Binding LoadCommand}" />
+                <MenuItem Header="Save" Command="{Binding SaveCommand}" />
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Update" Command="{Binding UpdateCommand}" />
             </MenuItem>
         </Menu>
         <!--<StatusBar DockPanel.Dock="Bottom">

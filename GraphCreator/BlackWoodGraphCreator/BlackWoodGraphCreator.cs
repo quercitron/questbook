@@ -6,6 +6,7 @@ using GraphCreatorInterface;
 
 namespace BlackWoodBook
 {
+    [Serializable]
     public class BlackWoodGraphCreator : BaseGraphCreator
     {
         public override BaseGraph CreateGraphFromText(string text)

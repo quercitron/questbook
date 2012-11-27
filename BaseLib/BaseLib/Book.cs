@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using BaseLib.Comparers;
@@ -15,7 +16,7 @@ namespace BaseLib
     [Serializable]
     public class Book
     {
-        public Book(string name, BaseGraph baseGraph)
+        private Book(string name, BaseGraph baseGraph)
         {
             Name = name;
             this.CreateDate = DateTime.Now;
@@ -46,6 +47,7 @@ namespace BaseLib
         public Book(string filePath, IGraphCreator graphCreator, string name)
             : this(name, graphCreator.CreateGraphFromFile(filePath))
         {
+            m_GraphCreator = graphCreator;
         }
 
         public Book(string filePath, IGraphCreator graphCreator)
@@ -61,6 +63,9 @@ namespace BaseLib
         public List<ItemType> AvailableItems { get; private set; }
 
         private readonly Dictionary<int, Paragraph> m_Paragraphs;
+
+        [OptionalField]
+        public IGraphCreator m_GraphCreator;
 
         public Paragraph GetParagraph(int id)
         {
@@ -463,6 +468,11 @@ namespace BaseLib
                     m_Edges[simpleEdge.From].Add(edge);   
                 }                
             }
+        }
+
+        public void Update(string filePath)
+        {
+            Update(m_GraphCreator.CreateGraphFromFile(filePath));
         }
     }
 }
