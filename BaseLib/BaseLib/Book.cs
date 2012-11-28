@@ -169,6 +169,8 @@ namespace BaseLib
             AvailableItems.Remove(itemType);
         }
 
+        private int m_StatesCount;
+
         public List<SearchResultState> GetWay(SearchParameters parameters)
         {
             LastSearchParameters = parameters;
@@ -177,6 +179,8 @@ namespace BaseLib
             parameters.StartState.Items.RemoveAll(item => !item.BasicItem.InUse);
 
             var stopwatch = Stopwatch.StartNew();
+
+            m_StatesCount = 0;
 
             List<SearchResultState> result = null;
             switch (parameters.Algorithm)
@@ -322,6 +326,13 @@ namespace BaseLib
 
         private void Dfs(PersonState current, int distance, Dictionary<PersonState, int> stateDict, bool shuffle)
         {
+            m_StatesCount++;
+            if (m_StatesCount > 10000)
+            {
+                m_StatesCount -= 10000;
+                GC.Collect();
+            }
+
             stateDict.Add(current, distance);
 
             var nextStates = GenerateNextStates(current).ToList();
@@ -342,10 +353,8 @@ namespace BaseLib
 
         private static List<SearchResultState> FindLongestWay(Dictionary<PersonState, int> searchResult)
         {
-            var stopwatch = Stopwatch.StartNew();
             var max = searchResult.Values.Max();
             var furthestState = searchResult.First(p => p.Value == max).Key;
-            stopwatch.Stop();
 
             return WayToState(searchResult, furthestState);
         }

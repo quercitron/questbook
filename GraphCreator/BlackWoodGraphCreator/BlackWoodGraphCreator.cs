@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-
+using System.Text.RegularExpressions;
 using GraphCreatorInterface;
 
 namespace BlackWoodBook
@@ -55,13 +55,18 @@ namespace BlackWoodBook
 
                     if (num == currentParagraph + 1)
                     {
-                        start = text.IndexOf(currentParagraph.ToString(), currentDescriptionPosition);
-                        int end = text.IndexOf((currentParagraph + 1).ToString(), start);
+                        if (currentParagraph > 0)
+                        {
+                            var regex = new Regex(string.Format(@"(?<P>\b{0}\b.*?)\b(?<Next>{1}\b)",
+                                currentParagraph, currentParagraph + 1), RegexOptions.Singleline);
 
-                        description = text.Substring(start, end - start);
-                        result.Descriptions.Add(currentParagraph, description);
+                            var match = regex.Match(text, currentDescriptionPosition);
 
-                        currentDescriptionPosition = end;
+                            description = match.Groups["P"].Value;
+                            result.Descriptions.Add(currentParagraph, description);
+
+                            currentDescriptionPosition = match.Groups["Next"].Index;
+                        }
 
                         currentParagraph++;
                         state = 0;
