@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Runtime.Serialization;
 using BaseLib.Interfaces;
 
 namespace BaseLib
@@ -19,6 +19,15 @@ namespace BaseLib
         public int Id { get; set; }
 
         public string Description { get; set; }
+
+        [OptionalField] 
+        private bool m_WasVisited;
+
+        public bool WasVisited
+        {
+            get { return m_WasVisited; }
+            set { m_WasVisited = value; }
+        }
 
         public List<ItemUnit> RecievedItems { get; private set; }
 

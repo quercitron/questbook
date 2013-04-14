@@ -32,5 +32,10 @@ namespace QuestBookViewModel.Models
         {
             get { return m_SearchResultState.IsSame; }
         }
+
+        public bool VisitedFirstTime
+        {
+            get { return m_SearchResultState.VisitedFirstTime; }
+        }
     }
 }

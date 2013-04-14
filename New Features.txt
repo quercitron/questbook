@@ -4,3 +4,4 @@
 4. Change ItemName to ItemType in rew/req items
 5. Add "Or"
 6. List where items/edges are used
+7. GC and memory problems

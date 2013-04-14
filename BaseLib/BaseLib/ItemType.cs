@@ -5,16 +5,17 @@ namespace BaseLib
     [Serializable]
     public class ItemType
     {
-        public ItemType(string name, bool isUnique, bool isVital, bool inUse)
+        public ItemType(string name, bool isUnique, bool inUse, bool isProhibiting, bool isVital)
         {
-            this.Name = name;
-            this.IsUnique = isUnique;
-            this.IsVital = isVital;
-            this.InUse = inUse;
+            Name = name;
+            IsUnique = isUnique;
+            InUse = inUse;
+            IsProhibiting = isProhibiting;
+            IsVital = isVital;
         }
 
         public ItemType(string name, bool isUnique, bool isVital)
-            : this(name, isUnique, isVital, true)
+            : this(name, isUnique, true, true, isVital)
         {
         }
 
@@ -23,6 +24,8 @@ namespace BaseLib
         public bool IsUnique { get; set; }
 
         public bool InUse { get; set; }
+
+        public bool IsProhibiting { get; set; }
 
         public bool IsVital { get; set; }
 

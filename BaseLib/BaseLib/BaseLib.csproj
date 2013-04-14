@@ -51,6 +51,17 @@
     <Compile Include="ItemType.cs" />
     <Compile Include="ItemUnit.cs" />
     <Compile Include="Paragraph.cs" />
+    <Compile Include="Pathfinding\BasePathFinder.cs" />
+    <Compile Include="Pathfinding\IPathFinder.cs" />
+    <Compile Include="Pathfinding\LongestPathFinder.cs" />
+    <Compile Include="Pathfinding\PathFormators\BasePathFormator.cs" />
+    <Compile Include="Pathfinding\PathFormators\IPathFormator.cs" />
+    <Compile Include="Pathfinding\PathFormators\LongestPathFormator.cs" />
+    <Compile Include="Pathfinding\PathFormators\DiscoverNewParagraphPathFormator.cs" />
+    <Compile Include="Pathfinding\PathStateGenerators\BasePathStateGenerator.cs" />
+    <Compile Include="Pathfinding\PathStateGenerators\BfsPathStateGenerator.cs" />
+    <Compile Include="Pathfinding\PathStateGenerators\DfsPathStateGenerator.cs" />
+    <Compile Include="Pathfinding\PathStateGenerators\IPathStateGenerator.cs" />
     <Compile Include="PersonState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestedItemUnit.cs" />

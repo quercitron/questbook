@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using BaseLib;
 using BaseLib.Enumerables;
@@ -17,13 +18,45 @@ namespace TestApplication
         {
             try
             {
-                var book = new Book("blackwood.txt", new BlackWoodGraphCreator(), "Forest Of Doom");
-                book.Save("save2.txt");
-
-                /*var book = Book.Load("save.txt");
-                //book.m_GraphCreator = new BlackWoodGraphCreator();
-                /*book.Update("Майкл Фрост - Чернолесье.doc");#1#
+                /*var book = new Book("blackwood.txt", new BlackWoodGraphCreator(), "Forest Of Doom");
                 book.Save("save2.txt");*/
+
+                var book = Book.Load("save.txt");
+
+                var edges = book.GetEdges(null, null);
+                string itemName = "Necklace";
+                foreach (var edge in edges)
+                {
+                    if (edge.RequestedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
+                    {
+                        Console.WriteLine(edge.From.Id);
+                    }
+                    if (edge.RecievedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
+                    {
+                        Console.WriteLine(edge.From.Id);
+                    }
+                }
+
+                foreach (var paragraph in book.Paragraphs)
+                {
+                    if (paragraph.RequestedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
+                    {
+                        Console.WriteLine(paragraph.Id);
+                    }
+                    if (paragraph.RecievedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
+                    {
+                        Console.WriteLine(paragraph.Id);
+                    }
+                }
+
+                /*foreach (var item in book.AvailableItems)
+                {
+                    item.IsProhibiting = true;
+                }*/
+
+                //book.m_GraphCreator = new BlackWoodGraphCreator();
+                /*book.Update("Майкл Фрост - Чернолесье.doc");*/
+                /*book.Save("save2.txt");*/
             }
             catch (Exception e)
             {

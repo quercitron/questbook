@@ -46,13 +46,13 @@ namespace BaseLib
 
         public static bool EdgeIsAvailable(PersonState state, Edge edge)
         {
-            // TODO: be carefull with InUse
-            if (edge.RecievedItems.Any(item => !item.BasicItem.InUse))
+            // TODO: be carefull with InUse and IsProhibiting
+            if (edge.RequestedItems.Any(item => !item.BasicItem.InUse && item.BasicItem.IsProhibiting))
             {
                 return false;
             }
 
-            foreach (var item in edge.RequestedItems)
+            foreach (var item in edge.RequestedItems.Where(item => item.BasicItem.IsProhibiting))
             {
                 var current = state.Items.Find(a => a.BasicItem == item.BasicItem);
                 if (current == null || current.Count < item.Count)
@@ -71,7 +71,8 @@ namespace BaseLib
             {
                 resultItems.Find(a => a.BasicItem == item.BasicItem).Count -= item.Count;
             }
-            foreach (var item in edge.To.RequestedItems.Where(a => a.BasicItem.InUse))
+            // TODO: be careful with IsProhibiting
+            foreach (var item in edge.To.RequestedItems.Where(a => a.BasicItem.IsProhibiting))
             {
                 var itemUnit = resultItems.Find(a => a.BasicItem == item.BasicItem);
                 if (itemUnit != null)

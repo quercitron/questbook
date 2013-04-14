@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
-using BaseLib.Comparers;
 using BaseLib.Enumerables;
-using BaseLib.Extensions;
+using BaseLib.Pathfinding;
+using BaseLib.Pathfinding.PathFormators;
+using BaseLib.Pathfinding.PathStateGenerators;
 using GraphCreatorInterface;
 
 namespace BaseLib
@@ -88,31 +88,6 @@ namespace BaseLib
 
         public SearchParameters LastSearchParameters { get; private set; }
 
-        // TODO: change to private
-
-        private List<PersonState> GenerateNextStates(PersonState state)
-        {
-            var result = new List<PersonState>();
-
-            foreach (var edge in this.m_Edges[state.ParagraphNo].Where(e => e.IsAcite).OrderByDescending(e => e.Priority, new PriorityComparer()))
-            {
-                if (ItemsWorker.EdgeIsAvailable(state, edge))
-                {
-                    var newState = ItemsWorker.MoveAlongTheEdge(state, edge);
-                    if (newState != null)
-                    {
-                        result.Add(newState);
-                    }
-                    if (edge.Priority > 0)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return result;
-        }
-
         public List<Edge> GetEdges(int? from, int? to)
         {
             var result = new List<Edge>();
@@ -169,58 +144,80 @@ namespace BaseLib
             AvailableItems.Remove(itemType);
         }
 
-        private int m_StatesCount;
-
         public List<SearchResultState> GetWay(SearchParameters parameters)
         {
             LastSearchParameters = parameters;
 
             // remove unuse items
-            parameters.StartState.Items.RemoveAll(item => !item.BasicItem.InUse);
+            parameters.StartState.Items.RemoveAll(item => !item.BasicItem.InUse || !item.BasicItem.IsProhibiting);
 
             var stopwatch = Stopwatch.StartNew();
 
-            m_StatesCount = 0;
+            IPathFinder pathFinder = null;
 
-            List<SearchResultState> result = null;
+            // TODO: Add mapping
             switch (parameters.Algorithm)
             {
                 case SearchAlgorithm.Bfs:
-                    result = GetFurthestWay(parameters.StartState);
+                    pathFinder = new LongestPathFinder(new BfsPathStateGenerator());
                     break;
                 case SearchAlgorithm.Dfs:
-                    result = GetDfsFurthestWay(parameters.StartState, false);
+                    pathFinder = new LongestPathFinder(new DfsPathStateGenerator(false));
                     break;
                 case SearchAlgorithm.RandomDfs:
-                    result = GetDfsFurthestWay(parameters.StartState, true);
+                    pathFinder = new LongestPathFinder(new DfsPathStateGenerator(true));
+                    break;
+                case SearchAlgorithm.DiscoverNewParagraph:
+                    pathFinder = new BasePathFinder(new BfsPathStateGenerator(), new DiscoverNewParagraphPathFormator(m_Paragraphs));
                     break;
             }
 
+            var result = pathFinder.FindPath(parameters.StartState, m_Edges);
+
             stopwatch.Stop();
 
-            MarkPreviousStates(result);
-            LastGeneratedWay = result;
+            if (result != null)
+            {
+                HandleNewPath(result);
+                LastGeneratedWay = result;
+            }
 
             return result;
         }
 
-        private void MarkPreviousStates(IList<SearchResultState> newWay)
+        private void HandleNewPath(IList<SearchResultState> newPath)
         {
-            if (LastGeneratedWay == null)
+            MarkPreviousStates(newPath);
+
+            foreach (var searchResultState in newPath)
+            {
+                var paragraph = GetParagraph(searchResultState.State.ParagraphNo);
+                if (!paragraph.WasVisited)
+                {
+                    // TODO: Change mechanism
+                    paragraph.WasVisited = true;
+                    searchResultState.VisitedFirstTime = true;
+                }
+            }
+        }
+
+        private void MarkPreviousStates(IList<SearchResultState> newPath)
+        {
+            if (newPath == null || LastGeneratedWay == null)
             {
                 return;
             }
 
-            int[,] d = new int[newWay.Count + 1, LastGeneratedWay.Count + 1];
-            bool[,] e = new bool[newWay.Count + 1, LastGeneratedWay.Count + 1];
+            int[,] d = new int[newPath.Count + 1,LastGeneratedWay.Count + 1];
+            bool[,] e = new bool[newPath.Count + 1,LastGeneratedWay.Count + 1];
 
             int i, j;
 
-            for (i = 1; i <= newWay.Count; i++)
+            for (i = 1; i <= newPath.Count; i++)
             {
                 for (j = 1; j <= LastGeneratedWay.Count; j++)
                 {
-                    if (newWay[i - 1].State.ParagraphNo.Equals(LastGeneratedWay[j - 1].State.ParagraphNo))
+                    if (newPath[i - 1].State.ParagraphNo.Equals(LastGeneratedWay[j - 1].State.ParagraphNo))
                     {
                         d[i, j] = d[i - 1, j - 1] + 1;
                         e[i, j] = true;
@@ -239,14 +236,14 @@ namespace BaseLib
                 }
             }
 
-            i = newWay.Count;
+            i = newPath.Count;
             j = LastGeneratedWay.Count;
 
             while (i > 0 && j > 0)
             {
                 if (e[i, j])
                 {
-                    newWay[i - 1].IsSame = true;
+                    newPath[i - 1].IsSame = true;
                     i--;
                     j--;
                 }
@@ -262,114 +259,6 @@ namespace BaseLib
                     }
                 }
             }
-        }
-
-        private List<SearchResultState> GetFurthestWay(PersonState startState)
-        {
-            var searchResult = RunSearch(startState);
-
-            return FindLongestWay(searchResult);
-        }
-
-        private List<SearchResultState> GetDfsFurthestWay(PersonState startState, bool shuffle)
-        {
-            long time1, time2;
-
-            var stopwatch = Stopwatch.StartNew();
-
-            var searchResult = RunDfsSearch(startState, shuffle);
-
-            stopwatch.Stop();
-            time1 = stopwatch.ElapsedMilliseconds;
-            stopwatch.Start();
-
-            var searchResultStates = FindLongestWay(searchResult);
-
-            stopwatch.Stop();
-            time2 = stopwatch.ElapsedMilliseconds;
-
-            return searchResultStates;
-        }
-
-        private Dictionary<PersonState, int> RunSearch(PersonState startState)
-        {
-            var stateDict = new Dictionary<PersonState, int>();
-            stateDict.Add(startState, 0);
-
-            var queue = new Queue<PersonState>();
-            queue.Enqueue(startState);
-
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                var currentDist = stateDict[current];
-
-                var nextStates = GenerateNextStates(current).Where(s => !stateDict.ContainsKey(s));
-                foreach (var nextState in nextStates)
-                {
-                    stateDict.Add(nextState, currentDist + 1);
-                    queue.Enqueue(nextState);
-                }
-            }
-
-            return stateDict;
-        }
-
-        private Dictionary<PersonState, int> RunDfsSearch(PersonState startState, bool shuffle)
-        {
-            var stateDict = new Dictionary<PersonState, int>();
-
-            Dfs(startState, 0, stateDict, shuffle);
-
-            return stateDict;
-        }
-
-        private void Dfs(PersonState current, int distance, Dictionary<PersonState, int> stateDict, bool shuffle)
-        {
-            m_StatesCount++;
-            if (m_StatesCount > 10000)
-            {
-                m_StatesCount -= 10000;
-                GC.Collect();
-            }
-
-            stateDict.Add(current, distance);
-
-            var nextStates = GenerateNextStates(current).ToList();
-
-            if (shuffle)
-            {
-                nextStates.Shuffle();
-            }
-
-            foreach (var nextState in nextStates)
-            {
-                if (!stateDict.ContainsKey(nextState))
-                {
-                    Dfs(nextState, distance + 1, stateDict, shuffle);
-                }
-            }
-        }
-
-        private static List<SearchResultState> FindLongestWay(Dictionary<PersonState, int> searchResult)
-        {
-            var max = searchResult.Values.Max();
-            var furthestState = searchResult.First(p => p.Value == max).Key;
-
-            return WayToState(searchResult, furthestState);
-        }
-
-        private static List<SearchResultState> WayToState(Dictionary<PersonState, int> searchResult, PersonState furthestState)
-        {
-            var result = new List<SearchResultState>();
-            while (furthestState != null)
-            {
-                result.Add(new SearchResultState(furthestState, searchResult[furthestState]));
-                furthestState = furthestState.PreviousState;
-            }
-
-            result.Reverse();
-            return result;
         }
 
         public void AddNewEdge(int fromId, int toId)

@@ -23,6 +23,8 @@ namespace QuestBookViewModel
 
             //m_Items = new ObservableCollection<ItemTypeModel>();
 
+            NewItemIsProhibiting = true;
+
             AddNewItemCommand = new RelayCommand(AddNewItemExecute, AddNewItemCommandCanExecute);
             LoadCommand = new RelayCommand(LoadCommandExecute);
             SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
@@ -92,6 +94,7 @@ namespace QuestBookViewModel
         {
             if (!string.IsNullOrEmpty(NewItemName))
             {
+                // TODO: Change constructor
                 var newItem = new ItemType(NewItemName, NewItemIsUnique, NewItemIsVital);
                 m_Book.AvailableItems.Add(newItem);
                 Items.Add(new ItemTypeModel(newItem));
@@ -211,6 +214,20 @@ namespace QuestBookViewModel
                 {
                     m_NewItemIsUnique = value;
                     NotifyPropertyChanged("NewItemIsUnique");
+                }
+            }
+        }
+
+        private bool m_NewItemIsProhibiting;
+        public bool NewItemIsProhibiting
+        {
+            get { return m_NewItemIsProhibiting; }
+            set
+            {
+                if (m_NewItemIsProhibiting != value)
+                {
+                    m_NewItemIsProhibiting = value;
+                    NotifyPropertyChanged("NewItemIsProhibiting");
                 }
             }
         }
@@ -414,7 +431,17 @@ namespace QuestBookViewModel
             }
         }
 
-        public EdgeModel SelectedEdge { get; set; }
+        private EdgeModel m_SelectedEdge;
+
+        public EdgeModel SelectedEdge
+        {
+            get { return m_SelectedEdge; }
+            set
+            {
+                m_SelectedEdge = value;
+                AddNewEdgeRequestedItemCommand.RaiseCanExecuteChanged();
+            }
+        }
 
         public RelayCommand AddNewEdgeRequestedItemCommand { get; private set; }
 

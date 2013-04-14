@@ -41,6 +41,16 @@ namespace QuestBookViewModel.Models
             }
         }
 
+        public bool IsProhibiting
+        {
+            get { return ItemType.IsProhibiting; }
+            set
+            {
+                ItemType.IsProhibiting = value;
+                RaisePropertyChanged("IsProhibiting");
+            }
+        }
+
         public bool IsVital
         {
             get { return ItemType.IsVital; }
