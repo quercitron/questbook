@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfParserInterfaces", "PdfParserInterfaces\PdfParserInterfaces.csproj", "{BDCF4B2C-83E7-4D87-94FC-A80B58A0C96B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfBoxParser", "PDFBoxParser\PdfBoxParser.csproj", "{C8F92C7B-6B55-422E-9F26-6EEB54ADB10D}"
@@ -28,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestBookApplication", "..\Interface\QuestBookApplication\QuestBookApplication.csproj", "{1820083B-3149-44E2-8DD5-DBD34BCD47EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestBookViewModel", "..\Interface\QuestBookViewModel\QuestBookViewModel.csproj", "{4D9C0EEB-6DFC-4F8C-A84B-804AA12281E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainSheltonBook", "CaptainSheltonBook\CaptainSheltonBook.csproj", "{439897EF-BC32-4F25-B2C8-C87408F431A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +143,16 @@ Global
 		{4D9C0EEB-6DFC-4F8C-A84B-804AA12281E1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4D9C0EEB-6DFC-4F8C-A84B-804AA12281E1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4D9C0EEB-6DFC-4F8C-A84B-804AA12281E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{439897EF-BC32-4F25-B2C8-C87408F431A8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +162,7 @@ Global
 		{BDCF4B2C-83E7-4D87-94FC-A80B58A0C96B} = {48DD8D4C-4DC4-4CA0-9DF0-38A56F731981}
 		{00780FD6-D307-4AD9-9862-19A1B4E65EC7} = {BB7CA951-CC97-4165-912A-79FDFF91A249}
 		{B2205507-4CBB-446F-AB56-2E5072401453} = {BB7CA951-CC97-4165-912A-79FDFF91A249}
+		{439897EF-BC32-4F25-B2C8-C87408F431A8} = {BB7CA951-CC97-4165-912A-79FDFF91A249}
 		{8D3E957B-FD04-43A8-8795-12478E68F45B} = {0C4637E4-E04D-43EC-9F7F-09DFDF6CEB96}
 		{2360A4A7-2D1C-4440-9975-9DC330D9E344} = {0C4637E4-E04D-43EC-9F7F-09DFDF6CEB96}
 		{1820083B-3149-44E2-8DD5-DBD34BCD47EA} = {4BFA4991-3FDB-4AE6-B6C5-4CA87D67C8E9}

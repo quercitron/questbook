@@ -93,6 +93,10 @@
       <Project>{00780FD6-D307-4AD9-9862-19A1B4E65EC7}</Project>
       <Name>GraphInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\PdfParser\CaptainSheltonBook\CaptainSheltonBook.csproj">
+      <Project>{439897ef-bc32-4f25-b2c8-c87408f431a8}</Project>
+      <Name>CaptainSheltonBook</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\PdfParser\PDFBoxParser\PdfBoxParser.csproj">
       <Project>{C8F92C7B-6B55-422E-9F26-6EEB54ADB10D}</Project>
       <Name>PdfBoxParser</Name>
