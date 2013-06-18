@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using PDFBoxParser;
 using TextExtractorInterface;
 
@@ -7,6 +8,8 @@ namespace TextExtractor
 {
     public class BaseTextExtractor : ITextExtractor
     {
+        private readonly string[] PlainTextFormats = new[] {".txt", ".fb2"};
+
         public string Extract(string filePath)
         {
             var extension = Path.GetExtension(filePath);
@@ -18,7 +21,7 @@ namespace TextExtractor
                 return pdfParser.ParseFile(filePath);
             }
 
-            if (extension == ".txt")
+            if (PlainTextFormats.Contains(extension))
             {
                 using (TextReader reader = File.OpenText(filePath))
                 {

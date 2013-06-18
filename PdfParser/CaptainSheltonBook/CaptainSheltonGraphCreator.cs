@@ -19,7 +19,7 @@ namespace CaptainSheltonBook
             foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))
             {
                 var currentParagraph = Convert.ToInt32(element.Element("title").Element("p").Value);
-                var paths = element.Elements("p").Elements("a").Select(path => Convert.ToInt32(path.Value));
+                var paths = element.Elements("p").Elements("a").Select(path => Convert.ToInt32(path.Value.Trim('(', ')')));
                 foreach (var path in paths)
                 {
                     graph.AddEdge(currentParagraph, path);

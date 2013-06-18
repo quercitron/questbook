@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace QuestBookViewModel.Commands
+namespace BaseInterfaceLib
 {
     public class RelayCommand : ICommand
     {

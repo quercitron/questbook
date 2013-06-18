@@ -71,9 +71,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GraphCreator\BlackWoodGraphCreator\BlackWoodBook.csproj">
+      <Project>{B2205507-4CBB-446F-AB56-2E5072401453}</Project>
+      <Name>BlackWoodBook</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\GraphCreator\GraphCreatorInterface\GraphInterface.csproj">
       <Project>{00780FD6-D307-4AD9-9862-19A1B4E65EC7}</Project>
       <Name>GraphInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PdfParser\CaptainSheltonBook\CaptainSheltonBook.csproj">
+      <Project>{439897ef-bc32-4f25-b2c8-c87408f431a8}</Project>
+      <Name>CaptainSheltonBook</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

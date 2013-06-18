@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using BaseInterfaceLib;
 using BaseLib;
 using BaseLib.Enumerables;
 using BlackWoodBook;
-using QuestBookViewModel.Commands;
+using ModalWindowsService;
 using QuestBookViewModel.Models;
 
 namespace QuestBookViewModel
@@ -26,6 +27,7 @@ namespace QuestBookViewModel
             NewItemIsProhibiting = true;
 
             AddNewItemCommand = new RelayCommand(AddNewItemExecute, AddNewItemCommandCanExecute);
+            NewCommand = new RelayCommand(NewCommandExecute);
             LoadCommand = new RelayCommand(LoadCommandExecute);
             SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
             DeleteItemCommand = new RelayCommand(DeleteItemCommandExecute, DeleteItemCommandCanExecute);
@@ -101,6 +103,21 @@ namespace QuestBookViewModel
 
                 AddNewItemCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        public RelayCommand NewCommand { get; private set; }
+
+        private void NewCommandExecute()
+        {
+            var service = new OpenBookService();
+            service.BookSelected += CreateBook;
+            service.GetBook();
+        }
+
+        private void CreateBook(object sender, SelectedBookArgs e)
+        {
+            var newBook = Book.CreateBook(e.FilePath, e.BookType);
+            UseBook(newBook);
         }
 
         public RelayCommand LoadCommand { get; private set; }

@@ -9,6 +9,8 @@ using BaseLib.Enumerables;
 using BaseLib.Pathfinding;
 using BaseLib.Pathfinding.PathFormators;
 using BaseLib.Pathfinding.PathStateGenerators;
+using BlackWoodBook;
+using CaptainSheltonBook;
 using GraphCreatorInterface;
 
 namespace BaseLib
@@ -53,6 +55,22 @@ namespace BaseLib
         public Book(string filePath, IGraphCreator graphCreator)
             : this(filePath, graphCreator, Path.GetFileName(filePath))
         {
+        }
+
+        // TODO: move to fabric?
+        public static Book CreateBook(string filePath, QuestBookType bookType)
+        {
+            IGraphCreator graphCreator = null;
+            switch (bookType)
+            {
+                case QuestBookType.BlackWood:
+                    graphCreator = new BlackWoodGraphCreator();
+                    break;
+                case QuestBookType.CaptainShelton:
+                    graphCreator = new CaptainSheltonGraphCreator();
+                    break;
+            }
+            return new Book(filePath, graphCreator);
         }
 
         public string Name { get; set; }
