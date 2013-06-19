@@ -77,7 +77,14 @@ namespace BaseLib
                 var itemUnit = resultItems.Find(a => a.BasicItem == item.BasicItem);
                 if (itemUnit != null)
                 {
-                    itemUnit.Count -= item.Count;
+                    if (item.Count >= 0)
+                    {
+                        itemUnit.Count -= item.Count;
+                    }
+                    else
+                    {
+                        itemUnit.Count = 0;
+                    }
                 }
                 if (item.BasicItem.IsVital && (itemUnit == null || itemUnit.Count <= 0))
                 {

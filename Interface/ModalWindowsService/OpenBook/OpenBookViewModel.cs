@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 using BaseInterfaceLib;
 using GraphCreatorInterface;
@@ -9,7 +7,7 @@ namespace ModalWindowsService
 {
     public class OpenBookViewModel : INotifyPropertyChanged
     {
-        private OpenBookService m_Service;
+        private readonly OpenBookService m_Service;
 
         private string m_Path;
 

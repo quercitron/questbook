@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using PDFBoxParser;
 using TextExtractorInterface;
 
@@ -23,7 +24,7 @@ namespace TextExtractor
 
             if (PlainTextFormats.Contains(extension))
             {
-                using (TextReader reader = File.OpenText(filePath))
+                using (TextReader reader = new StreamReader(filePath, Encoding.Default))
                 {
                     return reader.ReadToEnd();
                 }

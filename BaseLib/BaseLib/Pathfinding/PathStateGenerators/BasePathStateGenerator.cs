@@ -20,10 +20,10 @@ namespace BaseLib.Pathfinding.PathStateGenerators
                     if (newState != null)
                     {
                         result.Add(newState);
-                    }
-                    if (edge.Priority > 0)
-                    {
-                        break;
+                        if (edge.Priority > 0)
+                        {
+                            break;
+                        }
                     }
                 }
             }

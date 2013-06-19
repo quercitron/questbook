@@ -39,6 +39,8 @@ namespace QuestBookViewModel
             DeleteEdgeRequestedItemCommand = new RelayCommand(DeleteEdgeRequestedItemCommandExecute,
                                                               DeleteEdgeRequestedItemCommandCanExecute);
             GetFurthestWayCommand = new RelayCommand(GetFurthestWayCommandExecute, GetFurthestWayCommandCanExecute);
+            ResetParagraphsCommand = new RelayCommand(ResetParagraphsCommandExecute);
+            CleanPathCommand = new RelayCommand(CleanPathCommandExecute);
             AddNewParagraphRequestedItemCommand = new RelayCommand(AddNewParagraphRequestedItemCommandExecute,
                                                               AddNewParagraphRequestedItemCommandCanExecute);
             DeleteParagraphRequestedItemCommand = new RelayCommand(DeleteParagraphRequestedItemCommandExecute,
@@ -124,7 +126,7 @@ namespace QuestBookViewModel
 
         private void LoadCommandExecute()
         {
-            var newBook = Book.Load("save.txt");
+            var newBook = Book.Load("Braslavskiy_Tayna_kapitana_Sheltona.fb2.qbs");
             UseBook(newBook);
         }
 
@@ -132,7 +134,7 @@ namespace QuestBookViewModel
 
         private void SaveCommandExecute()
         {
-            m_Book.Save("save.txt");
+            m_Book.Save();
         }
 
         private bool SaveCommandCanExecute()
@@ -472,7 +474,7 @@ namespace QuestBookViewModel
         private bool AddNewEdgeRequestedItemCommandCanExecute()
         {
             // TODO: Reject new item adding
-            return SelectedEdge != null && m_NewEdgeRequestedItemType != null && NewEdgeRequestedItemCount > 0;
+            return SelectedEdge != null && m_NewEdgeRequestedItemType != null && NewEdgeRequestedItemCount != 0;
         }
 
         private RequestedItemUnitModel m_SelectedEdgeRequetedItem;
@@ -648,6 +650,42 @@ namespace QuestBookViewModel
             {
                 m_FoundWay = value;
                 NotifyPropertyChanged("FoundWay");
+            }
+        }
+
+        public RelayCommand CleanPathCommand { get; private set; }
+
+        private void CleanPathCommandExecute()
+        {
+            var result = MessageBox.Show("Are you sure you want to Clean current path?", "Clean", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+            // TODO: move into book
+            foreach (var step in m_Book.LastGeneratedWay)
+            {
+                if (step.VisitedFirstTime)
+                {
+                    m_Book.GetParagraph(step.State.ParagraphNo).WasVisited = false;
+                }
+            }
+        }
+
+        public RelayCommand ResetParagraphsCommand { get; private set; }
+
+        private void ResetParagraphsCommandExecute()
+        {
+            var result = MessageBox.Show("Are you sure you want to Reset all paragraphs?", "Reset", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            // TODO: move into book
+            foreach (var paragraph in m_Book.Paragraphs)
+            {
+                paragraph.WasVisited = false;
             }
         }
 

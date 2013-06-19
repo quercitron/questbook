@@ -7,13 +7,14 @@ using GraphCreatorInterface;
 
 namespace CaptainSheltonBook
 {
+    [Serializable]
     public class CaptainSheltonGraphCreator : BaseGraphCreator
     {
         public override BaseGraph CreateGraphFromText(string text)
         {
             var graph = new BaseGraph();
 
-            var stream = new MemoryStream(Encoding.ASCII.GetBytes(text));
+            var stream = new MemoryStream(Encoding.Default.GetBytes(text));
             XElement book = XElement.Load(stream);
 
             foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))

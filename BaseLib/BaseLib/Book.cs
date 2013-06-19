@@ -125,6 +125,11 @@ namespace BaseLib
             return result;
         }
 
+        public void Save()
+        {
+            Save(Name + ".qbs");    
+        }
+
         public void Save(string path)
         {
             var binaryFormatter = new BinaryFormatter();

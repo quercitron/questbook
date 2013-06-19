@@ -11,20 +11,21 @@
         </ObjectDataProvider>
     </Window.Resources>
     
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Path=Path, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         <Button Grid.Row="0" Grid.Column="1" Command="{Binding BrowseCommand}">Browse</Button>
         <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Source={StaticResource BookTypes}}" SelectedItem="{Binding BookType}" />
-        <Button Grid.Row="2" Grid.Column="1" Command="{Binding CreateCommand}">Create</Button>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding CreateCommand}">Create</Button>
     </Grid>
 </Window>

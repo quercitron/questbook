@@ -346,6 +346,12 @@
                             <Button Content="Add New Start Item" Command="{Binding AddStartItemCommand}" />
                         </StackPanel>
                     </Expander>
+                    <Grid Margin="0, 2, 0, 2" Height="93">
+                        <StackPanel VerticalAlignment="Bottom">
+                            <Button Margin="0, 2, 0, 2" Content="Clean current Path" Command="{Binding CleanPathCommand}" />
+                            <Button Margin="0, 2, 0, 2" Content="Reset All Paragraphs" Command="{Binding ResetParagraphsCommand}" />
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
 

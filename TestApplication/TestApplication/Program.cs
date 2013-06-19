@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Xml;
 using System.Xml.Linq;
 using BaseLib;
 using BaseLib.Enumerables;
@@ -23,7 +25,15 @@ namespace TestApplication
             {
                 //var creator = new CaptainSheltonGraphCreator();
                 //creator.CreateGraphFromFile("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
-                XElement book = XElement.Load("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
+
+                StreamReader reader = new StreamReader("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2", Encoding.Default);
+                var str = reader.ReadToEnd();
+                reader.Dispose();
+                MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(str));
+                //XmlReader rxmlRader = new XmlTextReader(stream);
+                XElement book = XElement.Load(stream);
+
+                //XElement book = XElement.Load("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
                 foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))
                 {
                     writer.WriteLine(element);
