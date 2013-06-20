@@ -54,6 +54,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OpenBook\IOpenBookService.cs" />
     <Compile Include="OpenBook\SelectedBookArgs.cs" />
     <Page Include="OpenBook\OpenBook.xaml">
       <Generator>MSBuild:Compile</Generator>

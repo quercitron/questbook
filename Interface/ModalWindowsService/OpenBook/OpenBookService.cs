@@ -4,7 +4,7 @@ using GraphCreatorInterface;
 
 namespace ModalWindowsService
 {
-    public class OpenBookService
+    public class OpenBookService : IOpenBookService
     {
         public void GetBook()
         {
