@@ -23,37 +23,50 @@ namespace TestApplication
             var writer = File.CreateText("output.txt");
             try
             {
-                //var creator = new CaptainSheltonGraphCreator();
-                //creator.CreateGraphFromFile("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
-
-                StreamReader reader = new StreamReader("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2", Encoding.Default);
-                var str = reader.ReadToEnd();
-                reader.Dispose();
-                MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(str));
-                //XmlReader rxmlRader = new XmlTextReader(stream);
-                XElement book = XElement.Load(stream);
-
-                //XElement book = XElement.Load("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
-                foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))
-                {
-                    writer.WriteLine(element);
-                    writer.WriteLine(element.Name);
-                    writer.WriteLine("# {0}", element.Element("title").Element("p").Value);
-                    var refs = element.Elements("p").Elements("a");
-                    foreach (var @ref in refs)
-                    {
-                        writer.WriteLine(@ref.Value.Trim('(', ')'));
-                    }
-                    var text = string.Join(Environment.NewLine, element.Elements("p").Select(p => p.Value));
-                    writer.WriteLine("({0})", text);
-                }
-                //writer.WriteLine(book.Element("description"));
+                ParseShelton(writer);
             }
             catch (Exception e)
             {
                 writer.WriteLine(e);
             }
             writer.Dispose();
+        }
+
+        private static void Test(StreamWriter writer)
+        {
+            DateTime today = DateTime.UtcNow;
+            DateTime nextDate = today.AddDays(20.5);
+            writer.WriteLine((nextDate - today).Days);
+            writer.WriteLine((nextDate - today).TotalDays);
+        }
+
+        private static void ParseShelton(StreamWriter writer)
+        {
+            //var creator = new CaptainSheltonGraphCreator();
+            //creator.CreateGraphFromFile("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
+
+            StreamReader reader = new StreamReader("Braslavskiy_Tayna_kapitana_Sheltona.fb2", Encoding.Default);
+            var str = reader.ReadToEnd();
+            reader.Dispose();
+            MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(str));
+            //XmlReader rxmlRader = new XmlTextReader(stream);
+            XElement book = XElement.Load(stream);
+
+            //XElement book = XElement.Load("Braslavskiy_Tayna_kapitana_Sheltona.240266.fb2");
+            foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))
+            {
+                writer.WriteLine(element);
+                writer.WriteLine(element.Name);
+                writer.WriteLine("# {0}", element.Element("title").Element("p").Value);
+                var refs = element.Elements("p").Elements("a");
+                foreach (var @ref in refs)
+                {
+                    writer.WriteLine(@ref.Value.Trim('(', ')'));
+                }
+                var text = string.Join(Environment.NewLine, element.Elements("p").Select(p => p.Value));
+                writer.WriteLine("({0})", text);
+            }
+            //writer.WriteLine(book.Element("description"));
         }
 
         private static void FindNecklace()

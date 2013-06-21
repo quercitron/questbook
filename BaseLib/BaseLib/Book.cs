@@ -44,6 +44,7 @@ namespace BaseLib
             }
 
             AvailableItems = new List<ItemType>();
+            m_IsSaved = false;
         }
 
         public Book(string filePath, IGraphCreator graphCreator, string name)
@@ -53,7 +54,7 @@ namespace BaseLib
         }
 
         public Book(string filePath, IGraphCreator graphCreator)
-            : this(filePath, graphCreator, Path.GetFileName(filePath))
+            : this(filePath, graphCreator, Path.GetFileNameWithoutExtension(filePath))
         {
         }
 
@@ -84,6 +85,34 @@ namespace BaseLib
 
         [OptionalField]
         private readonly IGraphCreator m_GraphCreator;
+
+        [OptionalField]
+        private bool m_IsSaved;
+        public bool IsSaved
+        {
+            get
+            {
+                return m_IsSaved;
+            }
+            set
+            {
+                m_IsSaved = value;
+            }
+        }
+
+        [OptionalField]
+        private string m_SaveName;
+        public string SaveName
+        {
+            get
+            {
+                return m_SaveName ?? Name + ".qbs";
+            }
+            set
+            {
+                m_SaveName = value;
+            }
+        }
 
         public Paragraph GetParagraph(int id)
         {
@@ -127,12 +156,15 @@ namespace BaseLib
 
         public void Save()
         {
-            Save(Name + ".qbs");    
+            var path = SaveName;
+            Save(path);
         }
 
         public void Save(string path)
         {
             var binaryFormatter = new BinaryFormatter();
+            IsSaved = true;
+            SaveName = Path.GetFileName(path);
             using (Stream stream = File.Open(path, FileMode.Create))
             {
                 binaryFormatter.Serialize(stream, this);
@@ -383,11 +415,16 @@ namespace BaseLib
                 var edges = this.GetEdges(simpleEdge.From, simpleEdge.To);
 
                 // TODO: Check condition when to add/not add new edge
-                if (!edges.Any(e => e.IsDefault))
+                if (edges.Count == 0)
                 {
                     var edge = new Edge(m_Paragraphs[simpleEdge.From], m_Paragraphs[simpleEdge.To], true);
-                    m_Edges[simpleEdge.From].Add(edge);   
-                }                
+                    m_Edges[simpleEdge.From].Add(edge);
+                }
+                // Mark edge as default
+                if (edges.Count > 1)
+                {
+                    edges.First().IsDefault = true;
+                }
             }
         }
 

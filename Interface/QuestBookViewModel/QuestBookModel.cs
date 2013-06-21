@@ -12,6 +12,7 @@ using BaseLib;
 using BaseLib.Enumerables;
 using BlackWoodBook;
 using ModalWindowsService;
+using ModalWindowsService.NewBook;
 using ModalWindowsService.SelectFile;
 using QuestBookViewModel.Models;
 
@@ -27,10 +28,14 @@ namespace QuestBookViewModel
 
             NewItemIsProhibiting = true;
 
-            AddNewItemCommand = new RelayCommand(AddNewItemExecute, AddNewItemCommandCanExecute);
+            // menu commands
             NewCommand = new RelayCommand(NewCommandExecute);
             LoadCommand = new RelayCommand(LoadCommandExecute);
             SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
+            SaveAsCommand = new RelayCommand(SaveAsCommandExecute, SaveCommandCanExecute);
+            ExitCommand = new RelayCommand(ExitCommandExecute);
+
+            AddNewItemCommand = new RelayCommand(AddNewItemExecute, AddNewItemCommandCanExecute);
             DeleteItemCommand = new RelayCommand(DeleteItemCommandExecute, DeleteItemCommandCanExecute);
             AddParagraphRewardItemCommand = new RelayCommand(AddParagraphRewardItemCommandExecute,
                                                              AddParagraphRewardItemCommandCanExecute);
@@ -79,6 +84,7 @@ namespace QuestBookViewModel
             NotifyPropertyChanged("StartItems");
 
             SaveCommand.RaiseCanExecuteChanged();
+            SaveAsCommand.RaiseCanExecuteChanged();
             GetFurthestWayCommand.RaiseCanExecuteChanged();
             UpdateCommand.RaiseCanExecuteChanged();
 
@@ -129,7 +135,8 @@ namespace QuestBookViewModel
         {
             var service = new SelectFileService();
             service.BookSelected += OpenBook;
-            service.SelectFile("Open Book");
+            var parameters = new SelectFileParameters { Title = "Open" };
+            service.SelectFile(parameters);
         }
 
         private void OpenBook(object sender, SelectedFleArgs e)
@@ -142,12 +149,34 @@ namespace QuestBookViewModel
 
         private void SaveCommandExecute()
         {
-            m_Book.Save();
+            if (m_Book.IsSaved)
+            {
+                m_Book.Save();
+            }
+            else
+            {
+                SaveAsCommandExecute();
+            }
         }
 
         private bool SaveCommandCanExecute()
         {
             return m_Book != null;
+        }
+
+        public RelayCommand SaveAsCommand { get; private set; }
+
+        private void SaveAsCommandExecute()
+        {
+            var service = new SelectFileService();
+            service.BookSelected += SaveBook;
+            var parameters = new SelectFileParameters { Title = "Save As", SaveFile = true, DefaultName = m_Book.SaveName };
+            service.SelectFile(parameters);
+        }
+
+        private void SaveBook(object sender, SelectedFleArgs e)
+        {
+            m_Book.Save(e.FilePath);
         }
 
         public RelayCommand DeleteItemCommand { get; private set; }
@@ -174,6 +203,13 @@ namespace QuestBookViewModel
         {
             // TODO: Change
             m_Book.Update("BlackWood.txt");            
+        }
+
+        public RelayCommand ExitCommand { get; private set; }
+
+        public void ExitCommandExecute()
+        {
+            Application.Current.MainWindow.Close();
         }
 
         private void RemoveItem(ItemTypeModel itemTypeModel)

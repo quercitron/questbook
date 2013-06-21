@@ -8,6 +8,10 @@ namespace ModalWindowsService.SelectFile
     {
         private readonly SelectFileService m_Service;
 
+        private readonly string m_Extensions;
+        private readonly string m_DefaultExtensions = "Quest Book Saves|*.qbs";
+        private readonly string m_AllFilesEnd = "|All Files (*.*)|*.*";
+
         private string m_FilePath;
 
         public string FilePath
@@ -28,7 +32,7 @@ namespace ModalWindowsService.SelectFile
         {
             var dialog = new OpenFileDialog();
             dialog.Multiselect = false;
-            dialog.Filter = "Quest Book Saves|*.qbs|All Files (*.*)|*.*";
+            dialog.Filter = this.m_Extensions;
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -43,9 +47,10 @@ namespace ModalWindowsService.SelectFile
             m_Service.Window.Close();
         }
 
-        public SelectFileViewModel(SelectFileService service)
+        public SelectFileViewModel(SelectFileService service, string extensions = null)
         {
             m_Service = service;
+            m_Extensions = (extensions ?? m_DefaultExtensions) + m_AllFilesEnd;
             BrowseCommand = new RelayCommand(BrowseCommandExecute);
             OpenCommand = new RelayCommand(OpenCommandExecute);
         }

@@ -1,20 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+using System.Windows.Forms;
 
 namespace ModalWindowsService.SelectFile
 {
     public class SelectFileService : ISelectFileService
     {
-        public Window Window { get; private set; }
+        private readonly string m_DefaultExtensions = "Quest Book Saves|*.qbs";
+        private readonly string m_AllFilesEnd = "|All Files (*.*)|*.*";
 
-        public void SelectFile(string title)
+        public void SelectFile(SelectFileParameters parameters)
         {
-            Window = new SelectFileWindow {Title = title};
-            Window.DataContext = new SelectFileViewModel(this);
-            Window.Show();
+            FileDialog dialog;
+            if (parameters.SaveFile)
+            {
+                dialog = new SaveFileDialog
+                    {
+                        Filter = (parameters.Extensions ?? this.m_DefaultExtensions) + this.m_AllFilesEnd,
+                        FileName = parameters.DefaultName
+                    };
+            }
+            else
+            {
+                dialog = new OpenFileDialog
+                    {
+                        Multiselect = false,
+                        Filter = (parameters.Extensions ?? this.m_DefaultExtensions) + this.m_AllFilesEnd
+                    };
+            }
+            var result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                NotifyFileSelected(dialog.FileName);
+            }
         }
 
         public void NotifyFileSelected(string path)

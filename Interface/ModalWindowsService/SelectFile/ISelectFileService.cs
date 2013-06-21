@@ -4,7 +4,7 @@ namespace ModalWindowsService.SelectFile
 {
     public interface ISelectFileService
     {
-        void SelectFile(string title);
+        void SelectFile(SelectFileParameters parameters);
 
         event EventHandler<SelectedFleArgs> BookSelected;
     }

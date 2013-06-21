@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
+
 using GraphCreatorInterface;
 
-namespace ModalWindowsService
+namespace ModalWindowsService.NewBook
 {
     public class NewBookService : INewBookService
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ModalWindowsService
+namespace ModalWindowsService.NewBook
 {
     public interface INewBookService
     {

@@ -31,7 +31,7 @@ namespace BaseLib
 
         // TODO: prohibit free add
 
-        public bool IsDefault { get; private set; }
+        public bool IsDefault { get; set; }
 
         public bool IsChanged { get; set; }
 

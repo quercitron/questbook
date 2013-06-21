@@ -25,7 +25,7 @@ namespace CaptainSheltonBook
                 {
                     graph.AddEdge(currentParagraph, path);
                 }
-                var description = string.Join(Environment.NewLine, element.Elements("p").Select(p => p.Value));
+                var description = string.Join(Environment.NewLine, element.Elements().Where(el => el.Name != "title").Select(p => p.Value));
                 graph.Descriptions.Add(currentParagraph, description);
             }
             return graph;

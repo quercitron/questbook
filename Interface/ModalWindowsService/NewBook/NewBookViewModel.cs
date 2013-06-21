@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
+
 using BaseInterfaceLib;
+
 using GraphCreatorInterface;
 
-namespace ModalWindowsService
+namespace ModalWindowsService.NewBook
 {
     public class NewBookViewModel : INotifyPropertyChanged
     {
@@ -27,6 +29,8 @@ namespace ModalWindowsService
 
         public RelayCommand CreateCommand { get; set; }
 
+        public RelayCommand CancelCommand { get; set; }
+
         private void BrowseCommandExecute()
         {
             var dialog = new OpenFileDialog();
@@ -44,11 +48,17 @@ namespace ModalWindowsService
             m_Service.Window.Close();
         }
 
+        private void CancelCommandExecute()
+        {
+            m_Service.Window.Close();
+        }
+
         public NewBookViewModel(NewBookService service)
         {
             m_Service = service;
             BrowseCommand = new RelayCommand(BrowseCommandExecute);
             CreateCommand = new RelayCommand(CreateCommandExecute);
+            CancelCommand = new RelayCommand(CancelCommandExecute);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

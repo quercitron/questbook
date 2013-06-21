@@ -58,11 +58,8 @@
     <Compile Include="NewBook\SelectedBookArgs.cs" />
     <Compile Include="SelectFile\ISelectFileService.cs" />
     <Compile Include="SelectFile\SelectedFleArgs.cs" />
+    <Compile Include="SelectFile\SelectFileParameters.cs" />
     <Compile Include="SelectFile\SelectFileService.cs" />
-    <Compile Include="SelectFile\SelectFileViewModel.cs" />
-    <Compile Include="SelectFile\SelectFileWindow.xaml.cs">
-      <DependentUpon>SelectFileWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="NewBook\NewBook.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,10 +68,6 @@
       <DependentUpon>NewBook.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SelectFile\SelectFileWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NewBook\NewBookService.cs" />

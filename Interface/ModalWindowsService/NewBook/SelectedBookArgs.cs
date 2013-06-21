@@ -1,14 +1,15 @@
 ﻿using System;
+
 using GraphCreatorInterface;
 
-namespace ModalWindowsService
+namespace ModalWindowsService.NewBook
 {
     public class SelectedBookArgs : EventArgs
     {
         public SelectedBookArgs(string path, QuestBookType bookType)
         {
-            FilePath = path;
-            BookType = bookType;
+            this.FilePath = path;
+            this.BookType = bookType;
         }
 
         public string FilePath { get; private set; }
