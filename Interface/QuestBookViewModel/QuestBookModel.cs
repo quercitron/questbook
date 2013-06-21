@@ -12,6 +12,7 @@ using BaseLib;
 using BaseLib.Enumerables;
 using BlackWoodBook;
 using ModalWindowsService;
+using ModalWindowsService.SelectFile;
 using QuestBookViewModel.Models;
 
 namespace QuestBookViewModel
@@ -111,7 +112,7 @@ namespace QuestBookViewModel
 
         private void NewCommandExecute()
         {
-            var service = new OpenBookService();
+            var service = new NewBookService();
             service.BookSelected += CreateBook;
             service.GetBook();
         }
@@ -126,7 +127,14 @@ namespace QuestBookViewModel
 
         private void LoadCommandExecute()
         {
-            var newBook = Book.Load("Braslavskiy_Tayna_kapitana_Sheltona.fb2.qbs");
+            var service = new SelectFileService();
+            service.BookSelected += OpenBook;
+            service.SelectFile("Open Book");
+        }
+
+        private void OpenBook(object sender, SelectedFleArgs e)
+        {
+            var newBook = Book.Load(e.FilePath);
             UseBook(newBook);
         }
 
@@ -662,14 +670,8 @@ namespace QuestBookViewModel
             {
                 return;
             }
-            // TODO: move into book
-            foreach (var step in m_Book.LastGeneratedWay)
-            {
-                if (step.VisitedFirstTime)
-                {
-                    m_Book.GetParagraph(step.State.ParagraphNo).WasVisited = false;
-                }
-            }
+
+            m_Book.CleanPath();
         }
 
         public RelayCommand ResetParagraphsCommand { get; private set; }
@@ -682,11 +684,7 @@ namespace QuestBookViewModel
                 return;
             }
 
-            // TODO: move into book
-            foreach (var paragraph in m_Book.Paragraphs)
-            {
-                paragraph.WasVisited = false;
-            }
+            m_Book.ResetParagraphs();
         }
 
         public RelayCommand GetFurthestWayCommand { get; private set; }

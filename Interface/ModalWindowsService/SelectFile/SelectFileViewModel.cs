@@ -1,54 +1,53 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 using BaseInterfaceLib;
-using GraphCreatorInterface;
 
-namespace ModalWindowsService
+namespace ModalWindowsService.SelectFile
 {
-    public class OpenBookViewModel : INotifyPropertyChanged
+    public class SelectFileViewModel : INotifyPropertyChanged
     {
-        private readonly OpenBookService m_Service;
+        private readonly SelectFileService m_Service;
 
-        private string m_Path;
+        private string m_FilePath;
 
-        public string Path
+        public string FilePath
         {
-            get { return m_Path; }
+            get { return m_FilePath; }
             set
             {
-                m_Path = value;
-                OnPropertyChanged("Path");
+                m_FilePath = value;
+                OnPropertyChanged("FilePath");
             }
         }
 
-        public QuestBookType BookType { get; set; }
-
         public RelayCommand BrowseCommand { get; set; }
 
-        public RelayCommand CreateCommand { get; set; }
+        public RelayCommand OpenCommand { get; set; }
 
         private void BrowseCommandExecute()
         {
             var dialog = new OpenFileDialog();
+            dialog.Multiselect = false;
+            dialog.Filter = "Quest Book Saves|*.qbs|All Files (*.*)|*.*";
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                Path = dialog.FileName;
+                FilePath = dialog.FileName;
             }
         }
 
-        private void CreateCommandExecute()
+        private void OpenCommandExecute()
         {
             // TODO: change order?
-            m_Service.NotifyBookSelected(Path, BookType);
+            m_Service.NotifyFileSelected(FilePath);
             m_Service.Window.Close();
         }
 
-        public OpenBookViewModel(OpenBookService service)
+        public SelectFileViewModel(SelectFileService service)
         {
             m_Service = service;
             BrowseCommand = new RelayCommand(BrowseCommandExecute);
-            CreateCommand = new RelayCommand(CreateCommandExecute);
+            OpenCommand = new RelayCommand(OpenCommandExecute);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

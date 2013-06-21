@@ -4,12 +4,12 @@ using GraphCreatorInterface;
 
 namespace ModalWindowsService
 {
-    public class OpenBookService : IOpenBookService
+    public class NewBookService : INewBookService
     {
         public void GetBook()
         {
-            Window = new OpenBookWindow();
-            Window.DataContext = new OpenBookViewModel(this);
+            Window = new NewBookWindow();
+            Window.DataContext = new NewBookViewModel(this);
             Window.Show();
         }
 

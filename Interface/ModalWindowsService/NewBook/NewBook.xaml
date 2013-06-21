@@ -1,8 +1,8 @@
-﻿<Window x:Class="ModalWindowsService.OpenBookWindow"
+﻿<Window x:Class="ModalWindowsService.NewBookWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:enumerables="clr-namespace:GraphCreatorInterface;assembly=GraphCreatorInterface"
-        Title="OpenBookWindow" Height="150" Width="525">
+        Title="NewBookWindow" Height="150" Width="500">
     <Window.Resources>
         <ObjectDataProvider x:Key="BookTypes" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>

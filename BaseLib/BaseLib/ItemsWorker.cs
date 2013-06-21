@@ -55,7 +55,7 @@ namespace BaseLib
             foreach (var item in edge.RequestedItems.Where(item => item.BasicItem.IsProhibiting))
             {
                 var current = state.Items.Find(a => a.BasicItem == item.BasicItem);
-                if (current == null || current.Count < item.Count)
+                if (current == null || current.Count < item.Count || (current.Count == item.Count && item.BasicItem.IsVital))
                 {
                     return false;
                 }
@@ -86,6 +86,7 @@ namespace BaseLib
                         itemUnit.Count = 0;
                     }
                 }
+                // TODO: Check why doesn't work
                 if (item.BasicItem.IsVital && (itemUnit == null || itemUnit.Count <= 0))
                 {
                     return null;

@@ -395,5 +395,26 @@ namespace BaseLib
         {
             Update(m_GraphCreator.CreateGraphFromFile(filePath));
         }
+
+        public void ResetParagraphs()
+        {
+            foreach (var paragraph in this.Paragraphs)
+            {
+                paragraph.WasVisited = false;
+            }
+        }
+
+        public void CleanPath()
+        {
+            foreach (var step in this.LastGeneratedWay)
+            {
+                if (step.VisitedFirstTime)
+                {
+                    this.GetParagraph(step.State.ParagraphNo).WasVisited = false;
+                }
+            }
+            // TODO: change mechanics
+            this.LastGeneratedWay = null;
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ModalWindowsService
 {
-    public interface IOpenBookService
+    public interface INewBookService
     {
         void GetBook();
 
