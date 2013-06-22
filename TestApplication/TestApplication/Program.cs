@@ -69,7 +69,7 @@ namespace TestApplication
             //writer.WriteLine(book.Element("description"));
         }
 
-        private static void FindNecklace()
+        private static void FindNecklace(StreamWriter writer)
         {
 /*var book = new Book("blackwood.txt", new BlackWoodGraphCreator(), "Forest Of Doom");
                 book.Save("save2.txt");*/
@@ -82,11 +82,11 @@ namespace TestApplication
             {
                 if (edge.RequestedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
                 {
-                    Console.WriteLine(edge.From.Id);
+                    writer.WriteLine(edge.From.Id);
                 }
                 if (edge.RecievedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
                 {
-                    Console.WriteLine(edge.From.Id);
+                    writer.WriteLine(edge.From.Id);
                 }
             }
 
@@ -94,11 +94,11 @@ namespace TestApplication
             {
                 if (paragraph.RequestedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
                 {
-                    Console.WriteLine(paragraph.Id);
+                    writer.WriteLine(paragraph.Id);
                 }
                 if (paragraph.RecievedItems.Any(item => item.BasicItem.Name.Contains(itemName)))
                 {
-                    Console.WriteLine(paragraph.Id);
+                    writer.WriteLine(paragraph.Id);
                 }
             }
 

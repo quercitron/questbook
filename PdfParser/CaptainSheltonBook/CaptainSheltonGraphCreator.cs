@@ -15,7 +15,7 @@ namespace CaptainSheltonBook
             var graph = new BaseGraph();
 
             var stream = new MemoryStream(Encoding.Default.GetBytes(text));
-            XElement book = XElement.Load(stream);
+            var book = XElement.Load(stream);
 
             foreach (var element in book.Elements("body").Elements("section").Where(s => s.HasAttributes))
             {

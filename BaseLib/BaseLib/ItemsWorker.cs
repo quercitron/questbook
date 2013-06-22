@@ -86,7 +86,7 @@ namespace BaseLib
                         itemUnit.Count = 0;
                     }
                 }
-                // TODO: Check why doesn't work
+
                 if (item.BasicItem.IsVital && (itemUnit == null || itemUnit.Count <= 0))
                 {
                     return null;

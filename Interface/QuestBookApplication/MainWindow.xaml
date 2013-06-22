@@ -130,7 +130,7 @@
                 <Separator/>
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
             </MenuItem>
-            <MenuItem Header="Edit">
+            <MenuItem Header="Edit" Visibility="Hidden">
                 <MenuItem Header="Update" Command="{Binding UpdateCommand}" />
             </MenuItem>
         </Menu>
