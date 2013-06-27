@@ -124,6 +124,11 @@ namespace BaseLib
             get { return m_Paragraphs.Values.ToList(); }
         }
 
+        public Dictionary<int, Paragraph> ParagraphsDictionary
+        {
+            get { return m_Paragraphs; }
+        }
+
         private readonly Dictionary<int, List<Edge>> m_Edges;
 
         public void AddNewItem(ItemType item)
@@ -208,24 +213,8 @@ namespace BaseLib
 
             var stopwatch = Stopwatch.StartNew();
 
-            IPathFinder pathFinder = null;
-
-            // TODO: Add mapping
-            switch (parameters.Algorithm)
-            {
-                case SearchAlgorithm.Bfs:
-                    pathFinder = new LongestPathFinder(new BfsPathStateGenerator());
-                    break;
-                case SearchAlgorithm.Dfs:
-                    pathFinder = new LongestPathFinder(new DfsPathStateGenerator(false));
-                    break;
-                case SearchAlgorithm.RandomDfs:
-                    pathFinder = new LongestPathFinder(new DfsPathStateGenerator(true));
-                    break;
-                case SearchAlgorithm.DiscoverNewParagraph:
-                    pathFinder = new BasePathFinder(new BfsPathStateGenerator(), new DiscoverNewParagraphPathFormator(m_Paragraphs));
-                    break;
-            }
+            // TODO: move factory to field
+            var pathFinder = new StandartPathfinderFactory().Create(this, parameters.Algorithm);
 
             var result = pathFinder.FindPath(parameters.StartState, m_Edges);
 

@@ -45,6 +45,8 @@
     <Compile Include="Edge.cs" />
     <Compile Include="Enumerables\SearchAlgorithm.cs" />
     <Compile Include="Extensions\Shuffler.cs" />
+    <Compile Include="FastSearchPathfinder.cs" />
+    <Compile Include="FastSearchPathfinderFactory.cs" />
     <Compile Include="Interfaces\IContainsPrize.cs" />
     <Compile Include="Interfaces\IRequestItems.cs" />
     <Compile Include="ItemsWorker.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Paragraph.cs" />
     <Compile Include="Pathfinding\BasePathFinder.cs" />
     <Compile Include="Pathfinding\IPathFinder.cs" />
+    <Compile Include="Pathfinding\IPathfinderFactory.cs" />
     <Compile Include="Pathfinding\LongestPathFinder.cs" />
     <Compile Include="Pathfinding\PathFormators\BasePathFormator.cs" />
     <Compile Include="Pathfinding\PathFormators\IPathFormator.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="Pathfinding\PathStateGenerators\BfsPathStateGenerator.cs" />
     <Compile Include="Pathfinding\PathStateGenerators\DfsPathStateGenerator.cs" />
     <Compile Include="Pathfinding\PathStateGenerators\IPathStateGenerator.cs" />
+    <Compile Include="Pathfinding\StandartPathfinderFactory.cs" />
     <Compile Include="PersonState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestedItemUnit.cs" />
