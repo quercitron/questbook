@@ -421,7 +421,7 @@ namespace BaseLib
                     m_Edges[simpleEdge.From].Add(edge);
                 }
                 // Mark edge as default
-                if (edges.Count > 1)
+                if (edges.Count > 0 && !edges.Any(e => e.IsDefault))
                 {
                     edges.First().IsDefault = true;
                 }
